@@ -1,26 +1,18 @@
-# Connecting Your App to Storage
+# OAuth2 with MSAL
 
-In this exercise, you'll be given an application for a virtual zoo, and asked to add connections
-to your earlier deployed SQL database and Blob Storage to populate the zoo application.
+This exercise will help you get familiar with integrating the Microsoft Authentication Library,
+or `msal`, into an application. In the previous exercise, you registered an app with Azure Active
+Directory, and you'll use some of the information from there so that authentication can occur.
 
-If you already closed down your database and blob storage, you'll want to go back and re-create them before getting started.
+**Note**: This app will be served on `https` only as Azure AD will block insecure connections for redirect URIs on deployed applications. As such, when testing on `localhost`, make sure to add `https` at the start instead of `http`, e.g. `https://localhost:5555`.
 
-1. First, familiarize yourself at least with the `views.py` file in the `FlaskExercise` directly, although you may also want to check out the other files. You can see an example screenshot of the deployed application below.
-    <br><img src="example-connected-app.png" width="500" />
-2. Next, add the necessary environment variables to connect to the SQL database in `config.py`.
-3. Then, add the necessary environment variables to connect to the Blob storage container in `config.py`.
-4. Add the necessary code in `models.py` to work with the `BlobServiceClient` to upload new images and delete any images that are replaced.
-4. Run the app on your local machine, and check that the animals are correctly populated from the SQL database.
-5. Add some images for each animal. You should be able to check back in your blob container and see that new images were added, and they should populate back to the main page.
-
-While it's not a required part of this exercise, you can also try to deploy the app using either
-an app service or virtual machine; you shouldn't need any additional changes specific to the 
-storage connections, but other changes may be necessary.
-
-## Troubleshooting
-
-- Mac users may need to install `unixodbc` as well as related drivers as shown below:
-    ```bash
-    brew install unixodbc
-    ```
-- Check [here](https://docs.microsoft.com/en-us/sql/connect/odbc/linux-mac/install-microsoft-odbc-driver-sql-server-macos?view=sql-server-ver15) to add SQL Server drivers for Mac. [This StackOverflow post](https://stackoverflow.com/questions/44527452/cant-open-lib-odbc-driver-13-for-sql-server-sym-linking-issue) may also help resolve certain issues.
+1. You can launch the app, if desired, to start, but you'll notice that it doesn't yet allow you to log in with your Microsoft account. To start, open up `config.py`, and enter in both the client secret and application client ID you previously copied down from Azure AD. If your app is no longer registered, go back through the steps in the previous exercise to obtain new values.
+2. You'll also notice a variable for `REDIRECT_PATH`. This should start with a `/`, and then can be whatever else you want it to be (although you should stay away from `/home`, `/login` or `/logout`, since those are used elsewhere in the app). Once you have this set, go back to Azure AD and enter this as the redirect URI for your app, as well as adding a logout URI.
+3. Now, you're ready to get started with `msal`. The app code contained in `views.py` currently implements a bit of basic log in and logout with the `Flask-Login` library, but you need to implement the TODOs throughout for the "Sign in with Microsoft" button on the app to work appropriately. The suggested order is as follow:
+    - Implement `_build_msal_app` to create a confidential client application
+    - Implement `_build_auth_url` to get an authorization request URL
+    - Acquire a token from an msal app within the `authorized` function
+    - Add the appropriate logout URL to the `logout` function
+    
+    Together, the above four steps should allow you to have a functional "Sign in with Microsoft" button with the Microsoft Authentication Library, as well as to log back out of the related Microsoft account.
+4. Test your app out in localhost (making sure to use `https`), or feel free to deploy the app as well.

@@ -1,16 +1,21 @@
-import os
-basedir = os.path.abspath(os.path.dirname(__file__))
-
 class Config(object):
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'secret-key'
+    # In a production app, store this instead in KeyVault or an environment variable
+    # TODO: Enter your client secret from Azure AD below
+    CLIENT_SECRET = "_fxHwkpSVT_kNS_9--nb7-JH5xXg-ZgiD7" 
 
-    SQL_SERVER = os.environ.get('SQL_SERVER') or 'hello-world321.database.windows.net'
-    SQL_DATABASE = os.environ.get('SQL_DATABASE') or 'helloworld-db'
-    SQL_USER_NAME = os.environ.get('SQL_USER_NAME') or 'udacityadmin'
-    SQL_PASSWORD = os.environ.get('SQL_PASSWORD') or 'qwer123$'
-    SQLALCHEMY_DATABASE_URI = 'mssql+pyodbc://' + SQL_USER_NAME + '@' + SQL_SERVER + ':' + SQL_PASSWORD + '@' + SQL_SERVER + ':1433/' + SQL_DATABASE + '?driver=ODBC+Driver+17+for+SQL+Server'
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    AUTHORITY = "https://login.microsoftonline.com/common"  # For multi-tenant app
+    # AUTHORITY = "https://login.microsoftonline.com/Enter_the_Tenant_Name_Here"
 
-    BLOB_ACCOUNT = os.environ.get('BLOB_ACCOUNT') or 'helloworld765'
-    BLOB_STORAGE_KEY = os.environ.get('BLOB_STORAGE_KEY') or 'a1yeZj6Cyt55jwC3ATz9J4Z04rR1TssBaStlnlxy6irJk+7Y4a18PzgkFnAfTZSklnRYnl56uejbW0Y1gECe7w=='
-    BLOB_CONTAINER = os.environ.get('BLOB_CONTAINER') or 'images'
+    # TODO: Enter your application client ID here
+    CLIENT_ID = "bdb42b4d-c054-48e2-ace4-37cc87fcc5c6"
+
+    # TODO: Enter the redirect path you want to use for OAuth requests
+    #   Note that this will be the end of the URI entered back in Azure AD
+    REDIRECT_PATH = "/getAToken"  # Used to form an absolute URL, 
+        # which must match your app's redirect_uri set in AAD
+
+    # You can find the proper permission names from this document
+    # https://docs.microsoft.com/en-us/graph/permissions-reference
+    SCOPE = ["User.Read"]
+
+    SESSION_TYPE = "filesystem"  # So token cache will be stored in server-side session
