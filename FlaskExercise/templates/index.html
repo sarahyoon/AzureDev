@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>OAuth2 with MSAL</title>
+    <title>Monitoring & Logging</title>
     <meta
       content="width=device-width, initial-scale=1, maximum-scale=1"
       name="viewport"
@@ -12,10 +12,17 @@
 
   <body>
     <div class = "container">
-      <div class="header box">For Authenticated User Eyes Only</div>
+      <div class="header box">Logging Center</div>
       <div class="content box">
-        <p>Welcome to the site!</p><br>
-        <a href="{{ url_for('logout') }}">Logout</a></li>
+        {% if log %}
+          <p>{{ log }}</p>
+        {% endif %}
+        <form action="/">
+          <input type="submit" name="log_button" value="info">
+          <input type="submit" name="log_button" value="warning">
+          <input type="submit" name="log_button" value="error">
+          <input type="submit" name="log_button" value="critical">
+        </form>
       </div>
       <div class="footer box">Copyright 2020 Udacious Student</div>
     </div>

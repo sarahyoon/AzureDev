@@ -1,18 +1,25 @@
-# OAuth2 with MSAL
+# Monitoring & Logging
 
-This exercise will help you get familiar with integrating the Microsoft Authentication Library,
-or `msal`, into an application. In the previous exercise, you registered an app with Azure Active
-Directory, and you'll use some of the information from there so that authentication can occur.
+In this exercise, you'll add logging to a web app, check out the logs in the Log stream for the
+app, create access alerts, and send the logs to a storage account for longer-term storage.
 
-**Note**: This app will be served on `https` only as Azure AD will block insecure connections for redirect URIs on deployed applications. As such, when testing on `localhost`, make sure to add `https` at the start instead of `http`, e.g. `https://localhost:5555`.
+If you load the app on its own, you'll notice that this basic app has four buttons, responding
+to four different logging levels - `info`, `warning`, `error` and `critical`. While in a complete
+app these would of course be triggered through different events occurring, in your case, you
+simply want to make sure Flask is appropriately logging these button presses.
 
-1. You can launch the app, if desired, to start, but you'll notice that it doesn't yet allow you to log in with your Microsoft account. To start, open up `config.py`, and enter in both the client secret and application client ID you previously copied down from Azure AD. If your app is no longer registered, go back through the steps in the previous exercise to obtain new values.
-2. You'll also notice a variable for `REDIRECT_PATH`. This should start with a `/`, and then can be whatever else you want it to be (although you should stay away from `/home`, `/login` or `/logout`, since those are used elsewhere in the app). Once you have this set, go back to Azure AD and enter this as the redirect URI for your app, as well as adding a logout URI.
-3. Now, you're ready to get started with `msal`. The app code contained in `views.py` currently implements a bit of basic log in and logout with the `Flask-Login` library, but you need to implement the TODOs throughout for the "Sign in with Microsoft" button on the app to work appropriately. The suggested order is as follow:
-    - Implement `_build_msal_app` to create a confidential client application
-    - Implement `_build_auth_url` to get an authorization request URL
-    - Acquire a token from an msal app within the `authorized` function
-    - Add the appropriate logout URL to the `logout` function
+To complete the exercise:
+1. You want anything that is a `warning` or above to be logged. Make sure the app's logger is configured for this in `__init__.py`. This means that if the `info` button is clicked, the related request will still be made, but both your local console, and later in Azure, should not note anything for `info` items.
+2. Add some logic in `views.py` for logging the correct level when a given button is pressed.
+3. Deploy the app as an app service. It may be easiest if you make a new resource group first, so that any additional services you add in the next steps can be easily deleted.
     
-    Together, the above four steps should allow you to have a functional "Sign in with Microsoft" button with the Microsoft Authentication Library, as well as to log back out of the related Microsoft account.
-4. Test your app out in localhost (making sure to use `https`), or feel free to deploy the app as well.
+    ```bash
+    az webapp up --sku F1 -n {YOUR_APP_NAME} --resource-group {YOUR_RESOURCE_GROUP} --location westus2
+    ```
+
+4. While waiting for the app to deploy, create a new storage account in the resource group with your app service. Eventually, the logs will be stored here.
+5. Once the app has deployed, navigate to the app service in the Azure portal, as well as opening the app URL in a separate window or tab. Navigate to the Log stream for your app, and check whether the logs are appearing appropriately for each button. If not, go back to steps 1 & 2.
+6. Go the the Diagnostic settings of your app, and add a setting that send the console logs to the storage account you created in Step 4. This will take around 10 minutes before logs start showing up in the storage account, so continue to the next step.
+7. In the Alerts section, create a new alert based on the `Requests` signal for when there are greater than a count of 20 requests in a 15 minute period (set this low so you will be sure to activate it). As part of doing so, create an action group, only including yourself, that will receive an email when the alert is triggered. This may also take roughly 10 minutes to kick in, so go ahead and progress to the next step.
+8. While you wait for the storage account to begin receiving logs and the alert to activate, go to the "Quotas" section under "App Service plan" in your app. Take note of the limits, which especially on the free tier are fairly low. If your app exceeds these limits, it will be stopped until the next reset, unless you scale up your app (outside the scope of this course). It's important to note here that all of these quota limitations are available for setting alerts - take a few minutes to consider what type of alerts you might consider setting to become aware of a potential upcoming quota issue.
+9. If it's been 10 minutes, go back to your app website and make sure to hit each of the buttons a few times to create additional logs and potentially activate an email alert. Then, go check if your storage container appropriately contains the logs, and if you have received an email alert.
