@@ -63,4 +63,3 @@ Since VM allows to have the full access and control, I can optimize and chose va
 
 ##### **Reference:
 ##### https://docs.microsoft.com/en-us/azure/architecture/guide/technology-choices/compute-decision-tree
->>>>>>> 6bb6742ba8fdd05c4fe45fe34fed7126033d38e3
