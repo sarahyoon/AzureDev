@@ -50,18 +50,7 @@
     + deploy the Web app from GitHub on Azure portal>Deployment Center
 4. Navigate to the deployed URL
 
-<<<<<<< HEAD
-#### **I CHOSE AppService** since CMS App is lightweight and won't approach to the size limit for App Services easily. Moreover, easy to deploy from the Azure Portal which requries much faster deployments.
 
-
-### Assess app changes that would change your decision.
-#### App Service:
-If CMS Appliction requires more complex functions and needs more 
-
-
-##### **Reference:
-##### https://docs.microsoft.com/en-us/azure/architecture/guide/technology-choices/compute-decision-tree
-=======
 #### My Choice: 
 I chose App Service since CMS App is a lightweight and won't approach to the size limit for App Services easily. Moreover, faster deployments than VM since App Service only requires fewer steps to deploy a Web Application. VM needs more customization in order to run an App. However, the CMS App has simple functions which only requires basic environment settings which already managed in App Service.
 
@@ -74,4 +63,3 @@ Since VM allows to have the full access and control, I can optimize and chose va
 
 ##### **Reference:
 ##### https://docs.microsoft.com/en-us/azure/architecture/guide/technology-choices/compute-decision-tree
->>>>>>> 6bb6742ba8fdd05c4fe45fe34fed7126033d38e3
